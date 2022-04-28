@@ -19,13 +19,8 @@ spec:
         volumeMounts:
         - name: var-run
           mountPath: /var/run
-      - name: jnlp
-        securityContext:
-          runAsUser: 0
-          fsGroup: 0
-        volumeMounts:
-        - name: var-run
-          mountPath: /var/run
+      - name: inline
+        image: jenkins/inbound-agent:4.6-1
         
     volumes:
     - emptyDir: {}
@@ -62,12 +57,14 @@ spec:
         stage('Scanning Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'sysdig-secure-api-credentials', passwordVariable: 'SECURE_API_TOKEN', usernameVariable: '')]) {
-                    sh '''
-                        VERSION=$(curl -L -s https://download.sysdig.com/scanning/inlinescan/latest_version.txt)
-                        curl -LO "https://download.sysdig.com/scanning/inlinescan/inlinescan_${VERSION}_linux_amd64"
-                        chmod +x ./inlinescan_${VERSION}_linux_amd64
-                        ./inlinescan_${VERSION}_linux_amd64 --apiurl https://secure.sysdig.com ./sysdig_secure_images --policy sysdig-best-practices -u
-                    '''
+                    container(inline") {
+                        sh '''
+                            VERSION=$(curl -L -s https://download.sysdig.com/scanning/inlinescan/latest_version.txt)
+                            /usr/bin/curl -LO "https://download.sysdig.com/scanning/inlinescan/inlinescan_${VERSION}_linux_amd64"
+                            chmod +x ./inlinescan_${VERSION}_linux_amd64
+                            ./inlinescan_${VERSION}_linux_amd64 --apiurl https://secure.sysdig.com ./sysdig_secure_images --policy sysdig-best-practices -u
+                        '''
+                    }
                 }
             }
         }
