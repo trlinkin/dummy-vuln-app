@@ -50,7 +50,7 @@ spec:
                 container("dind") {
                     sh "docker build -f Dockerfile -t ${params.DOCKER_REPOSITORY} ."
                     sh "echo ${params.DOCKER_REPOSITORY} > sysdig_secure_images"
-                    sh "docker save ${params.DOCKER_REPOSITORY} -o artifact.tar"
+                    sh "docker save ${params.DOCKER_REPOSITORY} -o cronagent"
                     sh "ls -lah"
                 }
             }
@@ -63,7 +63,8 @@ spec:
                             curl -LO "https://download.sysdig.com/scanning/bin/sysdig-cli-scanner/$(curl -L -s https://download.sysdig.com/scanning/sysdig-cli-scanner/latest_version.txt)/linux/amd64/sysdig-cli-scanner"
                             chmod +x ./sysdig-cli-scanner
                             ls -lah
-                            ./sysdig-cli-scanner --apiurl https://secure.sysdig.com file://artifact.tar --policy sysdig-best-practices -u
+                            ./sysdig-cli-scanner --apiurl https://secure.sysdig.com file://cronagent --policy sysdig-best-practices -u
+                            cat scan-logs
                         '''
                     }
                 }
