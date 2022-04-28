@@ -35,7 +35,6 @@ spec:
     
     environment {
         DOCKER = credentials('docker-repository-credentials')
-        SYSDIG_API_KEY = credentials('sysdig-secure-api-credentials')
     }
     
     stages {
@@ -62,7 +61,7 @@ spec:
                             VERSION=$(curl -L -s https://download.sysdig.com/scanning/inlinescan/latest_version.txt)
                             /usr/bin/curl -LO "https://download.sysdig.com/scanning/inlinescan/inlinescan_${VERSION}_linux_amd64"
                             chmod +x ./inlinescan_${VERSION}_linux_amd64
-                            ./inlinescan_${VERSION}_linux_amd64 --apiurl https://secure.sysdig.com ${params.DOCKER_REPOSITORY} --policy sysdig-best-practices -u
+                            ./inlinescan_${VERSION}_linux_amd64 --apiurl https://secure.sysdig.com ''' + params.DOCKER_REPOSITORY + ''' --policy sysdig-best-practices -u
                         '''
                     }
                 }
