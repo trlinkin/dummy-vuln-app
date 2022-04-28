@@ -21,6 +21,7 @@ spec:
           mountPath: /var/run
       - name: inline
         image: jenkins/inbound-agent:4.6-1
+        tty:true
         
     volumes:
     - emptyDir: {}
