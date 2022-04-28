@@ -60,9 +60,9 @@ spec:
                 withCredentials([usernamePassword(credentialsId: 'sysdig-secure-api-credentials', passwordVariable: 'SECURE_API_TOKEN', usernameVariable: '')]) {
                     container("jnlp") {
                         sh '''
+                            HOME=$(pwd)
                             curl -LO "https://download.sysdig.com/scanning/bin/sysdig-cli-scanner/$(curl -L -s https://download.sysdig.com/scanning/sysdig-cli-scanner/latest_version.txt)/linux/amd64/sysdig-cli-scanner"
                             chmod +x ./sysdig-cli-scanner
-                            ls -lah
                             ./sysdig-cli-scanner --apiurl https://secure.sysdig.com file://cronagent --policy sysdig-best-practices -u --console-log
                         '''
                     }
