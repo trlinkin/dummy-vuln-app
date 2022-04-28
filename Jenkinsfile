@@ -65,6 +65,7 @@ spec:
                             chmod +x ./inlinescan_${VERSION}_linux_amd64
                             ls -lah
                             ./inlinescan_${VERSION}_linux_amd64 --apiurl https://secure.sysdig.com file://artifact.tar --policy sysdig-best-practices -u
+                            cat /home/jenkins/agent/workspace/new\ scanner\ test/scan-logs
                         '''
                     }
                 }
