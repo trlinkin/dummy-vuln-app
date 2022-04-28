@@ -50,6 +50,7 @@ spec:
                 container("dind") {
                     sh "docker build -f Dockerfile -t ${params.DOCKER_REPOSITORY} ."
                     sh "echo ${params.DOCKER_REPOSITORY} > sysdig_secure_images"
+                    sh "docker save ${params.DOCKER_REPOSITORY} -o artifact.tar"
                 }
             }
         }
@@ -61,7 +62,7 @@ spec:
                             VERSION=$(curl -L -s https://download.sysdig.com/scanning/inlinescan/latest_version.txt)
                             /usr/bin/curl -LO "https://download.sysdig.com/scanning/inlinescan/inlinescan_${VERSION}_linux_amd64"
                             chmod +x ./inlinescan_${VERSION}_linux_amd64
-                            ./inlinescan_${VERSION}_linux_amd64 --apiurl https://secure.sysdig.com ''' + params.DOCKER_REPOSITORY + ''' --policy sysdig-best-practices -u
+                            ./inlinescan_${VERSION}_linux_amd64 --apiurl https://secure.sysdig.com file://artifact.tar --policy sysdig-best-practices -u
                         '''
                     }
                 }
