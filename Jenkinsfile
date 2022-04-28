@@ -61,10 +61,13 @@ spec:
         }
         stage('Scanning Image') {
             steps {
-                    // sh 'curl -LO \\"https://download.sysdig.com/scanning/bin/sysdig-cli-scanner/$(curl -L -s https://download.sysdig.com/scanning/sysdig-cli-scanner/latest_version.txt)/linux/amd64/sysdig-cli-scanner\\"'
-                    sh 'wget \\"https://download.sysdig.com/scanning/bin/sysdig-cli-scanner/$(wget -O https://download.sysdig.com/scanning/sysdig-cli-scanner/latest_version.txt)/linux/amd64/sysdig-cli-scanner\\"' 
-                    sh 'chmod +x ./sysdig-cli-scanner'
-                    sh 'SECURE_API_TOKEN=$SYSDIG_API_KEY ./sysdig-cli-scanner --apiurl https://secure.sysdig.com ./sysdig_secure_images --policy sysdig-best-practices -u'
+                withCredentials([usernamePassword(credentialsId: 'sysdig-secure-api-credentials', passwordVariable: 'SECURE_API_TOKEN', usernameVariable: '')]) {
+                    sh '''
+                        VERSION=$(curl -L -s https://download.sysdig.com/scanning/inlinescan/latest_version.txt)
+                        curl -LO "https://download.sysdig.com/scanning/inlinescan/inlinescan_${VERSION}_linux_amd64"
+                        chmod +x ./inlinescan_${VERSION}_linux_amd64
+                        ./inlinescan_${VERSION}_linux_amd64 --apiurl https://secure.sysdig.com ./sysdig_secure_images --policy sysdig-best-practices -u
+                    '''
             }
         }
    }
