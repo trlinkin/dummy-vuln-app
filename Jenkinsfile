@@ -60,12 +60,11 @@ spec:
                 withCredentials([usernamePassword(credentialsId: 'sysdig-secure-api-credentials', passwordVariable: 'SECURE_API_TOKEN', usernameVariable: '')]) {
                     container("jnlp") {
                         sh '''
-                            VERSION=$(curl -L -s https://download.sysdig.com/scanning/inlinescan/latest_version.txt)
-                            /usr/bin/curl -LO "https://download.sysdig.com/scanning/inlinescan/inlinescan_${VERSION}_linux_amd64"
-                            chmod +x ./inlinescan_${VERSION}_linux_amd64
+                            VERSION=$(curl -L -s https://download.sysdig.com/scanning/sysdig-cli-scanner/latest_version.txt))
+                            /usr/bin/curl -LO "https://download.sysdig.com/scanning/bin/sysdig-cli-scanner/${VERSION}/linux/amd64/sysdig-cli-scanner"
+                            chmod +x ./sysdig_cli_scanner
                             ls -lah
-                            ./inlinescan_${VERSION}_linux_amd64 --apiurl https://secure.sysdig.com file://artifact.tar --policy sysdig-best-practices -u
-                            cat /home/jenkins/agent/workspace/new\ scanner\ test/scan-logs
+                            ./sysdig_cli_scanner --apiurl https://secure.sysdig.com file://artifact.tar --policy sysdig-best-practices -u
                         '''
                     }
                 }
