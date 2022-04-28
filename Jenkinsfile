@@ -57,7 +57,7 @@ spec:
         stage('Scanning Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'sysdig-secure-api-credentials', passwordVariable: 'SECURE_API_TOKEN', usernameVariable: '')]) {
-                    container(inline") {
+                    container("inline") {
                         sh '''
                             VERSION=$(curl -L -s https://download.sysdig.com/scanning/inlinescan/latest_version.txt)
                             /usr/bin/curl -LO "https://download.sysdig.com/scanning/inlinescan/inlinescan_${VERSION}_linux_amd64"
