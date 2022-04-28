@@ -66,7 +66,7 @@ spec:
             steps {
                 withCredentials([usernamePassword(credentialsId: 'sysdig-secure-api-credentials', passwordVariable: 'SECURE_API_TOKEN', usernameVariable: '')]) {
                     container("dind") {
-                        sh "./sysdig-cli-scanner --apiurl https://secure.sysdig.com ${params.DOCKER_REPOSITORY}  --policy sysdig-best-practices -u --console-log"
+                        sh "./sysdig-cli-scanner --apiurl https://secure.sysdig.com ${params.DOCKER_REPOSITORY}  --policy sysdig-best-practices -u --detailed-policies-eval"
                     }
                 }
             }
