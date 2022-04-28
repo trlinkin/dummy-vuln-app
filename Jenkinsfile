@@ -49,22 +49,24 @@ spec:
             steps {
                 container("dind") {
                     sh "docker build -f Dockerfile -t ${params.DOCKER_REPOSITORY} ."
-                    sh "echo ${params.DOCKER_REPOSITORY} > sysdig_secure_images"
-                    sh "docker save ${params.DOCKER_REPOSITORY} -o cronagent"
-                    sh "ls -lah"
+                }
+            }
+        }
+        stage('Scanning Image Prep') {
+            steps {
+                 container("jnlp") {
+                     sh '''
+                         curl -LO "https://download.sysdig.com/scanning/bin/sysdig-cli-scanner/$(curl -L -s https://download.sysdig.com/scanning/sysdig-cli-scanner/latest_version.txt)/linux/amd64/sysdig-cli-scanner"
+                         chmod +x ./sysdig-cli-scanner
+                     '''
                 }
             }
         }
         stage('Scanning Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'sysdig-secure-api-credentials', passwordVariable: 'SECURE_API_TOKEN', usernameVariable: '')]) {
-                    container("jnlp") {
-                        sh '''
-                            HOME=$(pwd)
-                            curl -LO "https://download.sysdig.com/scanning/bin/sysdig-cli-scanner/$(curl -L -s https://download.sysdig.com/scanning/sysdig-cli-scanner/latest_version.txt)/linux/amd64/sysdig-cli-scanner"
-                            chmod +x ./sysdig-cli-scanner
-                            ./sysdig-cli-scanner --apiurl https://secure.sysdig.com file://cronagent --policy sysdig-best-practices -u --console-log
-                        '''
+                    container("dind") {
+                        sh "./sysdig-cli-scanner --apiurl https://secure.sysdig.com ${params.DOCKER_REPOSITORY}  --policy sysdig-best-practices -u --console-log"
                     }
                 }
             }
