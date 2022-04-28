@@ -68,6 +68,7 @@ spec:
                         chmod +x ./inlinescan_${VERSION}_linux_amd64
                         ./inlinescan_${VERSION}_linux_amd64 --apiurl https://secure.sysdig.com ./sysdig_secure_images --policy sysdig-best-practices -u
                     '''
+                }
             }
         }
    }
